@@ -2,28 +2,83 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex, nofollow">
-  <title>Открытие в браузере</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="assets/css/style.css?v=1738512000">
-</head>
-<body>
-  <div class="redirect-page">
-    <div class="redirect-card">
-      <i data-lucide="external-link" class="icon icon-xl icon-primary"></i>
-      <h1 class="redirect-title">Открытие страницы</h1>
-      <p class="redirect-text" id="message">Перенаправление…</p>
-      <a href="#" id="fallback-link" class="btn btn-primary" style="display: none;">
-        <i data-lucide="globe" class="icon icon-md"></i>
-        Перейти по ссылке
-      </a>
-      <p class="redirect-hint">Откройте ссылку в браузере устройства для корректного отображения.</p>
-    </div>
-  </div>
 
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="config.js?v=1738512000"></script>
-  <script src="assets/js/redirect.js?v=1738512000"></script>
+  <!-- 🔧 1. ЗАГОЛОВОК (необязательно) -->
+  <title>Переход…</title>
+
+  <!-- 🔧 2. ВСТАВЬ СЮДА ЦЕЛЕВУЮ ССЫЛКУ -->
+  <!-- ❗ МЕНЯТЬ ТОЛЬКО ЗДЕСЬ -->
+  <script>
+    const TARGET_URL = "https://jut.su";
+  </script>
+
+  <!-- мобильная оптимизация -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 🔧 3. META-редирект (костыль №1) -->
+  <meta http-equiv="refresh" content="0; url=https://jut.su">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    a, button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 14px 22px;
+      font-size: 18px;
+      text-decoration: none;
+      border-radius: 6px;
+      border: none;
+      background: #007aff;
+      color: #fff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <p>
+    Если ссылка открылась внутри Telegram,<br>
+    нажмите кнопку ниже 👇
+  </p>
+
+  <!-- 🔧 4. КНОПКА (самый надежный вариант для iOS) -->
+  <button onclick="openExternal()">Открыть в браузере</button>
+
+  <!-- 🔧 5. Запасная обычная ссылка -->
+  <br>
+  <a href="https://jut.su" target="_blank">
+    Открыть вручную
+  </a>
+
+  <script>
+    // костыль №2 — прямой переход
+    window.location.href = TARGET_URL;
+
+    // костыль №3 — попытка открыть новую вкладку
+    setTimeout(() => {
+      window.open(TARGET_URL, '_blank');
+    }, 150);
+
+    // костыль №4 — программный клик (iOS)
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href = TARGET_URL;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+    }, 300);
+
+    // функция для кнопки
+    function openExternal() {
+      window.location.href = TARGET_URL;
+    }
+  </script>
+
 </body>
 </html>
