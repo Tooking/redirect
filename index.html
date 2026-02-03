@@ -2,83 +2,42 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-
-  <!-- 🔧 1. ЗАГОЛОВОК (необязательно) -->
   <title>Переход…</title>
-
-  <!-- 🔧 2. ВСТАВЬ СЮДА ЦЕЛЕВУЮ ССЫЛКУ -->
-  <!-- ❗ МЕНЯТЬ ТОЛЬКО ЗДЕСЬ -->
-  <script>
-    const TARGET_URL = "https://jut.su";
-  </script>
-
-  <!-- мобильная оптимизация -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- 🔧 3. META-редирект (костыль №1) -->
-  <meta http-equiv="refresh" content="0; url=https://jut.su">
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px 20px;
-    }
-    a, button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 14px 22px;
-      font-size: 18px;
-      text-decoration: none;
-      border-radius: 6px;
-      border: none;
-      background: #007aff;
-      color: #fff;
-      cursor: pointer;
-    }
-  </style>
+  <!-- 🔧 КУДА НУЖЕН РЕДИРЕКТ -->
+  <script>
+    const REDIRECT_URL = "https://jut.su";
+  </script>
 </head>
-
 <body>
 
-  <p>
-    Если ссылка открылась внутри Telegram,<br>
-    нажмите кнопку ниже 👇
-  </p>
+<script>
+  try {
+    // 1️⃣ создаём "пустой PDF" в памяти
+    const pdfBlob = new Blob(
+      ["%PDF-1.4\n%EOF"],
+      { type: "application/pdf" }
+    );
 
-  <!-- 🔧 4. КНОПКА (самый надежный вариант для iOS) -->
-  <button onclick="openExternal()">Открыть в браузере</button>
+    const url = URL.createObjectURL(pdfBlob);
 
-  <!-- 🔧 5. Запасная обычная ссылка -->
-  <br>
-  <a href="https://jut.su" target="_blank">
-    Открыть вручную
-  </a>
+    // 2️⃣ инициируем скачивание (без кнопки)
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = " ";
+    document.body.appendChild(a);
+    a.click();
 
-  <script>
-    // костыль №2 — прямой переход
-    window.location.href = TARGET_URL;
+    // 3️⃣ освобождаем память
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (e) {}
 
-    // костыль №3 — попытка открыть новую вкладку
-    setTimeout(() => {
-      window.open(TARGET_URL, '_blank');
-    }, 150);
-
-    // костыль №4 — программный клик (iOS)
-    setTimeout(() => {
-      const a = document.createElement('a');
-      a.href = TARGET_URL;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      document.body.appendChild(a);
-      a.click();
-    }, 300);
-
-    // функция для кнопки
-    function openExternal() {
-      window.location.href = TARGET_URL;
-    }
-  </script>
+  // 4️⃣ редирект после попытки download
+  setTimeout(() => {
+    window.location.href = REDIRECT_URL;
+  }, 800);
+</script>
 
 </body>
 </html>
