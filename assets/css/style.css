@@ -63,6 +63,13 @@ body {
   word-break: break-all;
 }
 
+.btn-center {
+  width: 100%;
+  min-height: 60px;
+  font-size: 1.0625rem;
+  margin: 0 auto;
+}
+
 .redirect-hint {
   font-size: 0.75rem;
   color: var(--text-muted);
