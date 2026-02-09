@@ -1,67 +1,37 @@
-// redirect.js — открытие ссылки во внешнем браузере (без PHP: только клиентский редирект)
 (function () {
   function getTargetUrl() {
-    var params = new URLSearchParams(window.location.search);
-    var fromQuery = params.get('url') || params.get('to') || params.get('u');
-    if (fromQuery) return fromQuery;
-    if (window.REDIRECT_CONFIG && window.REDIRECT_CONFIG.defaultUrl) {
-      return window.REDIRECT_CONFIG.defaultUrl;
-    }
-    return null;
+    var q = new URLSearchParams(window.location.search);
+    return q.get('url') || q.get('to') || q.get('u') || (window.REDIRECT_CONFIG && window.REDIRECT_CONFIG.defaultUrl) || null;
   }
 
-  function setMessage(text) {
-    var el = document.getElementById('message');
-    if (el) el.textContent = text;
-  }
-
-  function isMiniApp() {
+  function inTelegramWebView() {
     return window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.openLink === 'function';
   }
 
-  function isAndroid() {
-    return /Android/i.test(navigator.userAgent);
-  }
-
-  function isIOS() {
-    return /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  }
-
-  function init() {
-    if (typeof lucide !== 'undefined') {
-      lucide.createIcons({ attrs: { class: 'icon', 'stroke-width': 2 } });
-    }
-
+  function run() {
     var url = getTargetUrl();
+    var msg = document.getElementById('message');
+    var btn = document.getElementById('open-browser-btn');
+
     if (!url) {
-      setMessage('Ссылка не задана. Укажите ?url=... или настройте config.js');
+      if (msg) msg.textContent = 'Ссылка не задана. Добавьте ?url=... или config.defaultUrl';
       return;
     }
 
-    if (isMiniApp()) {
-      // iOS/Android внутри Telegram: по нажатию открываем целевую ссылку во внешнем браузере
-      setMessage(isIOS() ? 'Нажмите кнопку — откроется в Safari' : 'Нажмите кнопку — откроется во внешнем браузере');
-      var btn = document.getElementById('open-browser-btn');
+    if (inTelegramWebView()) {
+      if (msg) msg.textContent = 'Нажмите кнопку — откроется во внешнем браузере с нужной страницей';
       if (btn) {
         btn.style.display = 'inline-flex';
-        btn.onclick = function () {
-          window.Telegram.WebApp.openLink(url);
-        };
+        btn.onclick = function () { window.Telegram.WebApp.openLink(url); };
       }
-      if (window.Telegram.WebApp.ready) {
-        window.Telegram.WebApp.ready();
-      }
+      if (window.Telegram.WebApp.ready) window.Telegram.WebApp.ready();
       return;
     }
 
-    // Уже во внешнем браузере — сразу редирект на целевую страницу (без PHP)
-    setMessage('Открытие…');
+    if (msg) msg.textContent = 'Открытие…';
     window.location.replace(url);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
 })();
