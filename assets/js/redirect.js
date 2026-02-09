@@ -1,4 +1,4 @@
-// redirect.js — открытие ссылки во внешнем браузере: Android — редирект через redirect.php, iOS — кнопка Web App
+// redirect.js — открытие ссылки во внешнем браузере (без PHP: только клиентский редирект)
 (function () {
   function getTargetUrl() {
     var params = new URLSearchParams(window.location.search);
@@ -8,13 +8,6 @@
       return window.REDIRECT_CONFIG.defaultUrl;
     }
     return null;
-  }
-
-  /** Ссылка на наш redirect.php с целевым url — во внешнем браузере даёт мгновенный 302 */
-  function getRedirectUrl(targetUrl) {
-    var base = window.location.pathname.replace(/\/[^/]*$/, '/') || '/';
-    var origin = window.location.origin;
-    return origin + base + 'redirect.php?url=' + encodeURIComponent(targetUrl);
   }
 
   function setMessage(text) {
@@ -46,13 +39,13 @@
     }
 
     if (isMiniApp()) {
-      // iOS/Android внутри Telegram: только по нажатию открываем во внешнем браузере наш redirect.php → там 302
+      // iOS/Android внутри Telegram: по нажатию открываем целевую ссылку во внешнем браузере
       setMessage(isIOS() ? 'Нажмите кнопку — откроется в Safari' : 'Нажмите кнопку — откроется во внешнем браузере');
       var btn = document.getElementById('open-browser-btn');
       if (btn) {
         btn.style.display = 'inline-flex';
         btn.onclick = function () {
-          window.Telegram.WebApp.openLink(getRedirectUrl(url));
+          window.Telegram.WebApp.openLink(url);
         };
       }
       if (window.Telegram.WebApp.ready) {
@@ -61,9 +54,9 @@
       return;
     }
 
-    // Уже во внешнем браузере (например Android с настройкой «открывать ссылки снаружи»): мгновенный редирект через redirect.php
+    // Уже во внешнем браузере — сразу редирект на целевую страницу (без PHP)
     setMessage('Открытие…');
-    window.location.replace(getRedirectUrl(url));
+    window.location.replace(url);
   }
 
   if (document.readyState === 'loading') {
