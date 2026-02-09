@@ -8,8 +8,15 @@
     return window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.openLink === 'function';
   }
 
+  var url = getTargetUrl();
+
+  // Во внешнем браузере — редирект сразу, до отрисовки страницы
+  if (url && !inTelegramWebView()) {
+    window.location.replace(url);
+    return;
+  }
+
   function run() {
-    var url = getTargetUrl();
     var msg = document.getElementById('message');
     var btn = document.getElementById('open-browser-btn');
 
@@ -25,11 +32,7 @@
         btn.onclick = function () { window.Telegram.WebApp.openLink(url); };
       }
       if (window.Telegram.WebApp.ready) window.Telegram.WebApp.ready();
-      return;
     }
-
-    if (msg) msg.textContent = 'Открытие…';
-    window.location.replace(url);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
