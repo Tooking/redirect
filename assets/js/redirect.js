@@ -12,7 +12,10 @@
   }
 
   function inTelegramWebView() {
-    return window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.openLink === 'function';
+    if (!window.Telegram || !window.Telegram.WebApp || typeof window.Telegram.WebApp.openLink !== 'function') return false;
+    // Реально внутри Telegram только если есть initData (её передаёт клиент Telegram). Во внешнем браузере initData пустой.
+    var initData = window.Telegram.WebApp.initData || '';
+    return typeof initData === 'string' && initData.length > 0;
   }
 
   var url = getTargetUrl();
