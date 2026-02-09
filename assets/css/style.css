@@ -7,6 +7,7 @@
   --card-bg: hsl(10, 10%, 6%);
   --border-color: hsl(10, 10%, 15%);
   --text-muted: hsl(0, 0%, 65%);
+  --ai-green: #10b981;
   --gradient-primary: linear-gradient(to right, #3b82f6, #8b5cf6);
   --gradient-card: linear-gradient(135deg, var(--card-bg) 0%, rgba(59, 130, 246, 0.05) 100%);
 }
@@ -63,10 +64,11 @@ body {
 }
 
 .redirect-hint {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   margin-top: 1rem;
-  line-height: 1.4;
+  line-height: 1.35;
+  opacity: 0.9;
 }
 
 .btn {
@@ -83,7 +85,6 @@ body {
   font-family: inherit;
   font-size: 1rem;
   font-weight: 600;
-  text-decoration: none;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
@@ -97,6 +98,7 @@ body {
 .btn .icon {
   width: 20px;
   height: 20px;
+  margin-bottom: 0;
 }
 
 @keyframes fadeIn {
